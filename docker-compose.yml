@@ -39,8 +39,6 @@ services:
       - NEO4J_apoc_export_file_enabled=true
       - NEO4J_apoc_jobs_pool_num__threads=4
       - NEO4J_apoc_jobs_scheduled_num__threads=4
-      - NEO4J_apoc_http_timeout_connect=60000
-      - NEO4J_apoc_http_timeout_read=120000
       - NEO4J_browser_remote__content__hostname__whitelist=*
 
 ################################################################################

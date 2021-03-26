@@ -52,4 +52,10 @@ This project will be supported at several levels within DFO:
 
 </details>
 
-## Case study
+## First Case study
+
+[Here's the full description of the case](doc/Path_Data_Mining_Case_Study.docx) and its [flowchart](doc/flowchart.png).
+
+Below is the graph representing the case
+
+![Here's the case transformed into a graph](img/graph.png)

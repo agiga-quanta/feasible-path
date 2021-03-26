@@ -7,7 +7,7 @@
 # - Apache POI and related libaries for xls(x) processing
 ####################
 
-mkdir -p data immport logs plugins
+mkdir -p data import logs plugins
 
 NEO4J_VERSION=4.2.2
 
