@@ -1,3 +1,5 @@
+////////////////////////////////////////////////////////////////////////////////
+//
 // Note: This script will be processed by neo4j-shell utility
 // All comments in Java Style: line preceded by //
 // Its syntax must be list of cypher queries and neo4j-shell commands
@@ -23,34 +25,24 @@
 // 6. Create a Node Key
 // ASSERT (variable.propertyName_1, …​, variable.propertyName_n) IS NODE KEY;
 //
-////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
-// NLP data: all node labels have 'NLP_' as prefix
+// STATE definitions
 //
-////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
-CREATE CONSTRAINT ON (n:AUTHORIZATION) ASSERT n.uid IS UNIQUE;
-CREATE CONSTRAINT ON (n:SERIOUS_HARM) ASSERT n.uid IS UNIQUE;
-CREATE CONSTRAINT ON (n:MITIGATING_ACTION) ASSERT n.uid IS UNIQUE;
-CREATE CONSTRAINT ON (n:OFFSETING_ACTION) ASSERT n.uid IS UNIQUE;
-CREATE CONSTRAINT ON (n:NOTIFY_FAILURE) ASSERT n.uid IS UNIQUE;
-CREATE CONSTRAINT ON (n:DEADLINE) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:MONITORING_COMPLIANCE) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:SITE_VISIT) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:REVIEW_REPORT) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:NON_COMPLICANCE_ACTION) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:REQUEST_ENFORCEMENT_ACTION) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:COMMUNICATION_WITH_PROPONENT) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:REQUEST_ENFORCEMENT_REVIEW) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:MONITORING_OFFSETING) ASSERT n.uid IS UNIQUE; 
-CREATE CONSTRAINT ON (n:TERMINAL) ASSERT n.uid IS UNIQUE; 
+CREATE CONSTRAINT ON (n:ACTION) ASSERT n.uid IS UNIQUE;
+CREATE CONSTRAINT ON (n:BEGIN_STATE) ASSERT n.uid IS UNIQUE;
+CREATE CONSTRAINT ON (n:DECISION) ASSERT n.uid IS UNIQUE;
+CREATE CONSTRAINT ON (n:END_STATE) ASSERT n.uid IS UNIQUE;
+CREATE CONSTRAINT ON (n:INPUT) ASSERT n.uid IS UNIQUE;
+CREATE CONSTRAINT ON (n:PROCESS) ASSERT n.uid IS UNIQUE; 
 //
-//
-////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // List all constraints
 CALL db.constraints();
@@ -61,7 +53,64 @@ CALL db.indexes();
 // Wait for all indexes online
 CALL db.awaitIndexes();
 //
-////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Call the nlp micro service to process the documents.
+//
+CALL apoc.custom.asProcedure(
+  'nlp_import',
+  'WITH $n AS n
+    CALL apoc.load.jsonParams($nlp_service, {method: "POST"}, $input)
+      YIELD value
+  WITH n, value
+    UNWIND value AS document
+  WITH n, document
+    UNWIND document.p AS sentence
+
+  WITH n, sentence
+    UNWIND sentence.e AS entity
+  WITH n, sentence, entity
+    MERGE (e:NAMED_ENTITY {c: entity.c})
+      ON CREATE SET e.n = 1
+      ON MATCH SET e.n = e.n + 1
+    MERGE (n)-[r:HAS_NAMED_ENTITY]->(e)
+      ON CREATE SET r.n = 1
+      ON MATCH SET r.n = r.n + 1
+  WITH n, sentence, e, entity
+    CALL apoc.create.addLabels(e, ["NAMED_ENTITY_" + entity.t]) YIELD node
+  WITH n, sentence, node AS e, entity
+    UNWIND entity.w AS word
+      MERGE (w:WORD {l: word.l})
+        ON CREATE SET w.n = 1
+        ON MATCH SET w.n = w.n + 1
+      MERGE (e)-[r:HAS_WORD]->(w)
+
+  WITH n, sentence
+    UNWIND sentence.k AS key_phrase
+  WITH n, sentence, key_phrase
+    MERGE (k:KEY_PHRASE {c: key_phrase.c})
+      ON CREATE SET k.n = 1
+      ON MATCH SET k.n = k.n + 1
+    MERGE (n)-[r:HAS_KEY_PHRASE]->(k)
+      ON CREATE SET r.n = 1
+      ON MATCH SET r.n = r.n + 1
+  WITH n, sentence, k, key_phrase
+    UNWIND key_phrase.w AS word
+      MERGE (w:WORD {l: word.l})
+        ON CREATE SET w.n = 1
+        ON MATCH SET w.n = w.n + 1
+      MERGE (k)-[r:HAS_WORD]->(w)
+        ON CREATE SET r.c = word.c
+  RETURN n AS result;',
+  'write',
+  [['result','NODE']],
+  [['n','NODE'], ['nlp_service','STRING'], ['input','STRING']]
+);
+//
+CALL apoc.custom.list;
+//
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 //

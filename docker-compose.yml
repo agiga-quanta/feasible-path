@@ -8,6 +8,23 @@ version: '3.9'
 services:
 
   ####################
+  # nlp:
+  #
+  nlp:
+    build:
+      context: ./nlp
+      dockerfile: Dockerfile
+    image: nghiadh/nlp:0.3.0
+    hostname: nlp
+    container_name: nlp
+    networks:
+      - backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./conf:/conf
+
+  ####################
   # neo4j:
   # - Neo4j + APOC + Apache POI + Graph Data Science + XLS import
   #

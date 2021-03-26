@@ -58,7 +58,7 @@ This project will be supported at several levels within DFO:
 
 Below is the graph representing the case
 
-![Here's the case transformed into a graph](img/graph.png)
+![Here's the case transformed into a graph](img/first_case.png)
 
 ### How to reproduce this on your computer
 
