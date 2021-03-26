@@ -17,6 +17,8 @@ The objective is to evaluate the feasibility of automating the application of PA
 
 Core to this exercise is establishing and characterizing case studies consisting of a concrete set of extracted information, step-by-step flow diagram depicting involved process, contextualization with domain-specific knowledge, decision making logic, and desirable outcomes. Using a set of defined case-studies, this work will classify existing authorization processes into distinct classes, describe in detail the technical process for automation, and define requirements for supervised machine learning of existing and future domain knowledge.
 
+<details><summary>Click for details!</summary>
+
 ### *Statement of Work*
 
 i. Understand and identify database information searching problem
@@ -47,3 +49,7 @@ This project will be supported at several levels within DFO:
 ### *Deliverables*
 - Written report on the outcome of the exercise and the feasibility of a follow-on project.
 - Diagram of the conceptual model developed. 
+
+</details>
+
+## Case study
