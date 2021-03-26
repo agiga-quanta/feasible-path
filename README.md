@@ -59,3 +59,38 @@ This project will be supported at several levels within DFO:
 Below is the graph representing the case
 
 ![Here's the case transformed into a graph](img/graph.png)
+
+### How to reproduce this on your computer
+
+*If you have only 5 mins and don't care if you want to keep it on your own machine*
+
+- Go to create a [neo4j sandbox](https://neo4j.com/sandbox/), click on 'Launch a Free Sandbox', agree to the terms, launch a blank sandbox, click on 'Open' green button to open a browser tab to access the sandbox.
+
+- copy the context of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
+
+- then run the following to see the whole graph:
+
+    MATCH (n) RETURN n
+
+
+*If you can deal with Docker and has admin right to your own machine*
+
+To run it on your computer (macOS or Linux)
+- install Docker Desktop (Docker & Docker Compose)
+- checkout the repository:
+
+    git clone https://github.com/nghia71/feasible-path.git
+    cd feasible-path
+
+- create and run neo4j docker:
+
+    ./run.sh
+
+- open your browser, go to http://localhost:7474, enter with username `neo4j`, password `path`
+
+- copy the content of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
+
+- then run the following to see the whole graph:
+
+    MATCH (n) RETURN n
+
