@@ -70,7 +70,7 @@ Below is the graph representing the case
 
 - then run the following to see the whole graph:
 
-    MATCH (n) RETURN n
+        MATCH (n) RETURN n
 
 
 *If you can deal with Docker and has admin right to your own machine*
@@ -79,12 +79,12 @@ To run it on your computer (macOS or Linux)
 - install Docker Desktop (Docker & Docker Compose)
 - checkout the repository:
 
-    git clone https://github.com/nghia71/feasible-path.git
-    cd feasible-path
+        git clone https://github.com/nghia71/feasible-path.git
+        cd feasible-path
 
 - create and run neo4j docker:
 
-    ./run.sh
+        ./run.sh
 
 - open your browser, go to http://localhost:7474, enter with username `neo4j`, password `path`
 
@@ -92,5 +92,5 @@ To run it on your computer (macOS or Linux)
 
 - then run the following to see the whole graph:
 
-    MATCH (n) RETURN n
+        MATCH (n) RETURN n
 
