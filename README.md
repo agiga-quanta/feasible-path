@@ -54,20 +54,124 @@ This project will be supported at several levels within DFO:
 
 ## First Case study
 
-[Here's the full description of the case](doc/Path_Data_Mining_Case_Study.docx) and its [flowchart](doc/flowchart.png).
+[Here's the full description of the case](doc/Path_Data_Mining_Case_Study.docx).
 
-Below is the graph representing the case
+The `Parks Canada, Trent Severn Waterway, Dam at Lock 23 Replacement` case is defined as an entity described in the table below and is represented as a neo4j node with the same properties.
 
-![Here's the case transformed into a graph](img/first_case.png)
+| identification | title                                                           | category | start_state  |
+|----------------|-----------------------------------------------------------------|----------|--------------|
+| case-1         | Parks Canada, Trent Severn Waterway, Dam at Lock 23 Replacement | Medium   | begin-case-1 |
+
+The states of the case as a process are represented as a list of rows in the table below. Each state has 12 properties:
+- identification: the (global) unique identification of the state
+- type: one of the following types:
+    + ACTION: an internal action by the case (process) controller
+    + INPUT: action by an external party resulted in one or several input items (documents, datasets, etc)
+    + DECISION: an evaluation resulted in a decision what next state to be chosen
+    + BEGIN/END (for process control), PROCESS - indicate a sub process with a BEGIN/END
+
+[This is the Excel spreadsheet that can be used to define further cases](import/feasible-path.xlsx).    
+
+| identification                    | type     | title                                                    | date        | event       | actors       | input_items                                                                                  | output_items                                                                                                                                                                                                                                                                                                                                                                                                                  | route                             | route_completed | alternate_routes  | alternate_routes_completed |
+|-----------------------------------|----------|----------------------------------------------------------|-------------|-------------|--------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|:---------------:|-------------------|:--------------------------:|
+| begin-case-1                      | BEGIN    | Begin case                                               |             |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               | authorization-issuance-case-1     |        Y        |                   |                            |
+| authorization-issuance-case-1     | ACTION   | Authorization issued on November 9, 2018.                | 2018-11 -09 |             |              | Case application                                                                             | Serious Harm associated with phase 1 cofferdam footprint and dewatering – 2417 m2 November 1, 2018 to July 15, 2019\|Serious Harm associated with phase 2 cofferdam footprint and dewatering – 1867 m2 July 15, 2019 to July 15 2020\| Serious Harm associated with 1088 m2 of infill associated with moving the dam downstream\|Fourteen conditions relating to avoiding and mitigating serious harm\|6 contingency measures | monitoring-report-process-case-1  |        Y        |                   |                            |
+| monitoring-report-process-case-1  | PROCESS  | Monitoring and report for avoidance and mitigation       | 2018-11 -09 |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               | begin-monitoring-report-case-1    |        Y        |                   |                            |
+| begin-monitoring-report-case-1    | BEGIN    | Begin monitoring and report for avoidance and mitigation | 2018-11 -09 |             |              | Fourteen conditions relating to avoiding and mitigating serious harm\|6 contingency measures | Habitat enhancement - creating a Walleye spawning shoal (760m2) at an offsite location\| Reinstating 1080m2 of habitat upstream of the dam\| 5 criteria to assess the implementation and effectiveness of the measures                                                                                                                                                                                                        | report-1-case-1                   |        Y        | site-visit-case-1 |              Y             |
+| site-visit-case-1                 | ACTION   | DFO site visit                                           | 2019-10 -29 |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               | report-1-case-1                   |        Y        |                   |                            |
+| report-1-case-1                   | INPUT    | Interim report 1 on effectiveness                        |             | 2019-12 -31 | Parks Canada |                                                                                              | Interim report 1                                                                                                                                                                                                                                                                                                                                                                                                              | receive-report-1-case-1           |        Y        |                   |                            |
+| receive-report-1-case-1           | DECISION | Report received                                          | 2019-11 -29 | 2019-11 -29 |              | Interim report 1                                                                             | Verified interim report 1                                                                                                                                                                                                                                                                                                                                                                                                     | report-2-case-1                   |        Y        |                   |                            |
+| report-2-case-1                   | INPUT    | Interim report 2 on effectiveness                        |             | 2020-12 -31 | Parks Canada |                                                                                              | Interim report 2                                                                                                                                                                                                                                                                                                                                                                                                              | receive-report-2-case-1           |        Y        |                   |                            |
+| receive-report-2-case-1           | DECISION | Report received                                          | 2020-12 -22 | 2020-12 -22 |              | Interim report 2                                                                             | Verified interim report 2                                                                                                                                                                                                                                                                                                                                                                                                     | report-3-case-1                   |        Y        |                   |                            |
+| report-3-case-1                   | INPUT    | Final report  on effectiveness                           |             | 2021-12 -31 | Parks Canada |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               | decision-monitoring-report-case-1 |        N        |                   |                            |
+| decision-monitoring-report-case-1 | DECISION | Decision for monitoring report                           |             |             |              | All monitoring reports                                                                       | All verified monitoring reports                                                                                                                                                                                                                                                                                                                                                                                               | end-monitoring-report-case-1      |        N        |                   |                            |
+| end-monitoring-report-case-1      | END      | End monitoring and report for avoidance and mitigation   | 2018-11 -09 |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               | end-case-1                        |        N        |                   |                            |
+| end-case-1                        | END      | End case                                                 | 2018-11 -09 |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               |                                   |                 |                   |                            |
+
+Here's the case transformed into a graph by a simple Cypher query
+
+![Here's the case transformed into a graph](img/first_case.png) 
+
+
+        CALL apoc.load.xls('/feasible-path.xlsx', '1!A1:D2')
+            YIELD map
+        WITH map
+        MERGE (case:CASE {uid: map.identification})
+            SET
+            case.title = map.title,
+            case.category = map.category,
+            case.start_state = map.start_state
+
+        WITH case
+        CALL apoc.load.xls('/feasible-path.xlsx', '1!A4:L17')
+            YIELD map
+        WITH case, map
+        MERGE (state:STATE {uid: map.identification})
+        WITH case, state, map  
+        CALL apoc.create.addLabels(state, [map.type]) YIELD node
+        WITH case, state, map
+        SET
+            state.title = map.title,
+            state.date = DATE(map.date),
+            state.event = DATE(map.event)
+        FOREACH (a IN SPLIT(map.actors, '|') | 
+            MERGE (actor:ACTOR {uid: a + '-' + case.uid})
+            SET
+                actor.title = a
+            MERGE (state)-[:HAS_ACTOR]->(actor)
+        )
+        FOREACH (i IN SPLIT(map.input_items, '|') | 
+            MERGE (item:ITEM {uid: i + '-' + case.uid})
+            SET
+                item.title = i
+            MERGE (state)-[:HAS_INPUT]->(item)
+        )
+        FOREACH (o IN SPLIT(map.output_items, '|') | 
+            MERGE (item:ITEM {uid: o + '-' + case.uid})
+            SET
+                item.title = o
+            MERGE (state)-[:HAS_OUTPUT]->(item)
+        )
+
+        WITH case
+        CALL apoc.load.xls('/feasible-path.xlsx', '1!A4:L17')
+            YIELD map
+        WITH case, map
+        MERGE (start_state:STATE {uid: case.start_state})
+        MERGE (case)-[r:STARTS_WITH]->(start_state)
+        WITH case, map
+        MERGE (start_state:STATE {uid: map.identification})
+        FOREACH (_ IN CASE WHEN map.route IS NOT NULL THEN [1] ELSE [] END |
+            MERGE (end_state:STATE {uid: map.route})
+            MERGE (start_state)-[r:NEXT]->(end_state)
+            SET
+                r.enabled = CASE map.route_completed = 'Y' WHEN TRUE THEN TRUE ELSE FALSE END
+        )
+        FOREACH (state_id IN SPLIT(map.alternate_routes, '|') | 
+            MERGE (end_state:STATE {uid: state_id})
+            MERGE (start_state)-[r:NEXT]->(end_state)
+            SET
+                r.enabled = CASE map.alternate_routes_completed = 'Y' WHEN TRUE THEN TRUE ELSE FALSE END
+        );
+
+### How to access the graph above
+
+- first watch this video to get familiar with neo4j brower [Getting Started with Neo4j Browser](https://neo4j.com/videos/gettingstartedbrowser4-0/)
+- then open your browser, go to http://206.47.13.10:7474, login with username `neo4j`, password `path`
+- then run the following to see the whole graph:
+
+        MATCH (n) RETURN n
+
+***Note: do not delete anything from the graph, please***
+
 
 ### How to reproduce this on your computer
 
 *If you have only 5 mins and don't care if you want to keep it on your own machine*
 
 - Go to create a [neo4j sandbox](https://neo4j.com/sandbox/), click on 'Launch a Free Sandbox', agree to the terms, launch a blank sandbox, click on 'Open' green button to open a browser tab to access the sandbox.
-
-- copy the context of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
-
+- first, copy the context of this [Cypher query](cql/step_2_custom_schema.cql), paste it into the query box, click on the blue button to run it.
+- second, copy the context of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
 - then run the following to see the whole graph:
 
         MATCH (n) RETURN n
@@ -87,9 +191,8 @@ To run it on your computer (macOS or Linux)
         ./run.sh
 
 - open your browser, go to http://localhost:7474, enter with username `neo4j`, password `path`
-
-- copy the content of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
-
+- first, copy the context of this [Cypher query](cql/step_2_custom_schema.cql), paste it into the query box, click on the blue button to run it.
+- second, copy the context of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
 - then run the following to see the whole graph:
 
         MATCH (n) RETURN n
