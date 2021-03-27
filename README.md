@@ -186,7 +186,7 @@ Here's the case transformed into a graph:
 ***Note: do not delete anything from the graph, please***
 
 
-### How to reproduce this on your computer
+### How to reproduce this in the cloud
 
 *If you have only 5 mins and don't care if you want to keep it on your own machine*
 
@@ -197,6 +197,7 @@ Here's the case transformed into a graph:
 
         MATCH (n) RETURN n
 
+### How to reproduce this on your computer
 
 *If you can deal with Docker and has admin right to your own machine*
 
