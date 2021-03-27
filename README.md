@@ -75,6 +75,16 @@ The states of the case as a process are represented as a list of rows in the tab
     + INPUT: action by an external party resulted in one or several input items (documents, datasets, etc)
     + DECISION: an evaluation resulted in a decision what next state to be chosen
     + BEGIN/END (for process control), PROCESS - indicate a sub process with a BEGIN/END
+- title: the short title of each state
+- date: the date (timestamp) when the state is created
+- event: the date when a reminder to be sent to notify users about this state
+- actors: who are interact with the state
+- input_items: items (document, datasets, etc) to be considered by this state
+- output_items: items (document, datasets, etc) to be produced/altered by this state
+- route: identification of state that follows the current statae by default
+- route_completed: indicate if this route is already completed
+- alternate_routes: different states that can also be reached from the current state
+- alternate_routes_completed: indicate if these route are already completed
 
 [This is the Excel spreadsheet that can be used to define further cases](import/feasible-path.xlsx).    
 
