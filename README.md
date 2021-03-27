@@ -54,6 +54,8 @@ This project will be supported at several levels within DFO:
 
 ## First Case study
 
+### Data extraction and transformation into a graph-based process
+
 [Here's the full description of the case](doc/Path_Data_Mining_Case_Study.docx).
 
 The `Parks Canada, Trent Severn Waterway, Dam at Lock 23 Replacement` case is defined as an entity described in the table below and is represented as a neo4j node with the same properties.
@@ -88,10 +90,9 @@ The states of the case as a process are represented as a list of rows in the tab
 | end-monitoring-report-case-1      | END      | End monitoring and report for avoidance and mitigation   | 2018-11 -09 |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               | end-case-1                        |        N        |                   |                            |
 | end-case-1                        | END      | End case                                                 | 2018-11 -09 |             |              |                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                               |                                   |                 |                   |                            |
 
-Here's the case transformed into a graph by a simple Cypher query
+### Data import into neo4j by Cypher query language
 
-![Here's the case transformed into a graph](img/first_case.png) 
-
+Here's the case imported into a neo4j database by a simple Cypher query
 
         CALL apoc.load.xls('/feasible-path.xlsx', '1!A1:D2')
             YIELD map
@@ -153,6 +154,12 @@ Here's the case transformed into a graph by a simple Cypher query
             SET
                 r.enabled = CASE map.alternate_routes_completed = 'Y' WHEN TRUE THEN TRUE ELSE FALSE END
         );
+
+### Data visualization
+
+Here's the case transformed into a graph:
+
+![Here's the case transformed into a graph](img/first_case.png) 
 
 ### How to access the graph above
 
