@@ -58,11 +58,15 @@ This project will be supported at several levels within DFO:
 
 [Here's the full description of the case](doc/Path_Data_Mining_Case_Study.docx).
 
+**Case**
+
 The `Parks Canada, Trent Severn Waterway, Dam at Lock 23 Replacement` case is defined as an entity described in the table below and is represented as a neo4j node with the same properties.
 
 | identification | title                                                           | category | start_state  |
 |----------------|-----------------------------------------------------------------|----------|--------------|
 | case-1         | Parks Canada, Trent Severn Waterway, Dam at Lock 23 Replacement | Medium   | begin-case-1 |
+
+**Process**
 
 The states of the case as a process are represented as a list of rows in the table below. Each state has 12 properties:
 - identification: the (global) unique identification of the state
