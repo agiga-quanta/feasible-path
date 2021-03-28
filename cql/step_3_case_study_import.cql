@@ -1,6 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-CALL apoc.load.xls('/feasible-path.xlsx', '1!A1:D2')
+
+:param xlsx_file => 'https://github.com/nghia71/feasible-path/raw/main/import/feasible-path.xlsx';
+
+CALL apoc.load.xls($xlsx_file, '1!A1:D2')
 	YIELD map
 WITH map
   MERGE (case:CASE {uid: map.identification})
@@ -14,7 +17,7 @@ WITH map
 ////////////////////////////////////////////////////////////////////////////////
 //
 WITH case
-  CALL apoc.load.xls('/feasible-path.xlsx', '1!A4:L17')
+  CALL apoc.load.xls($xlsx_file, '1!A4:L17')
 	  YIELD map
 WITH case, map
   MERGE (state:STATE {uid: map.identification})
@@ -49,7 +52,7 @@ WITH case, state, map
 ////////////////////////////////////////////////////////////////////////////////
 //
 WITH case
-  CALL apoc.load.xls('/feasible-path.xlsx', '1!A4:L17')
+  CALL apoc.load.xls($xlsx_file, '1!A4:L17')
 	  YIELD map
 WITH case, map
   MERGE (start_state:STATE {uid: case.start_state})
