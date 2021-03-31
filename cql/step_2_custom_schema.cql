@@ -27,6 +27,68 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////
+//
+// NLP data: all node labels have 'NLP_' as prefix
+//
+////////////////////////////////////////////////////////////////////////
+//
+// Document
+//
+CREATE CONSTRAINT ON (n:DOCUMENT) ASSERT n.uid IS UNIQUE;
+// - uid: the unique identifier of a document (e.g. file name)
+//
+// Sentence
+//
+CREATE CONSTRAINT ON (n:SENTENCE) ASSERT n.uid IS UNIQUE;
+//
+CREATE INDEX ON :SENTENCE(c);
+// - c is the textual content, it is  indexed
+CREATE INDEX ON :SENTENCE(s);
+// - s is the sentiment score, it is an indexed integer
+CREATE INDEX ON :SENTENCE(n);
+// - n is the numner of occurences of the sentence
+//
+// Named Entity
+//
+CREATE CONSTRAINT ON (n:NAMED_ENTITY) ASSERT n.c IS UNIQUE;
+// - c is the textual content, it is unique and indexed
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_CARDINAL) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_DATE) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_EVENT) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_FAC) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_GPE) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_LAW) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_LANGUAGE) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_LOC) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_MONEY) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_NORP) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_ORDINAL) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_ORG) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_PERCENT) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_PERSON) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_PRODUCT) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_QUANTITY) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_TIME) ASSERT n.c IS UNIQUE;
+CREATE CONSTRAINT ON (n:NAMED_ENTITY_WORK_OF_ART) ASSERT n.c IS UNIQUE;
+// - the entity type label (18 named entity types, e.g. PERSON)
+CREATE INDEX ON :NAMED_ENTITY(n);
+// - n is the number of occurences of the entity
+//
+// Key Phrase
+//
+CREATE CONSTRAINT ON (n:KEY_PHRASE) ASSERT n.c IS UNIQUE;
+// - c is the textual content, it is unique and indexed
+CREATE INDEX ON :KEY_PHRASE(n);
+// - n is the numner of occurences of the key phrase
+//
+// Lemmatized word
+//
+CREATE CONSTRAINT ON (n:WORD) ASSERT n.l IS UNIQUE;
+// - l is the lemma form of the text, it is unique and indexed
+CREATE INDEX ON :WORD(n);
+////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // STATE definitions
@@ -44,6 +106,7 @@ CREATE CONSTRAINT ON (n:PROCESS) ASSERT n.uid IS UNIQUE;
 //
 CREATE CONSTRAINT ON (n:ACTOR) ASSERT n.uid IS UNIQUE; 
 CREATE CONSTRAINT ON (n:ITEM) ASSERT n.uid IS UNIQUE; 
+CREATE CONSTRAINT ON (n:ALERT) ASSERT n.uid IS UNIQUE; 
 //
 ////////////////////////////////////////////////////////////////////////////////
 
