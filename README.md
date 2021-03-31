@@ -56,7 +56,7 @@ This project will be supported at several levels within DFO:
 
 Here's the PATH case.
 
-![Here's the PATH case](img/first_case.png) 
+![Here's the PATH case](img/first_case_path.jpg) 
 
 ### Data extraction and transformation into a graph-based process
 
@@ -159,6 +159,10 @@ The `PSPC (Public Works Canada), Temiskaming Dam and Bridge Replacement` case is
 Here's the case transformed into a graph:
 
 ![Here's the case transformed into a graph](img/second_case.png) 
+
+### Full graph with named entities and key phrases extracted
+
+![Here's the full graph](img/full_graph.png) 
 
 ## Implementation
 
@@ -280,9 +284,15 @@ Here's the case imported into a neo4j database by a simple Cypher query
 - Go to create a [neo4j sandbox](https://neo4j.com/sandbox/), click on 'Launch a Free Sandbox', agree to the terms, launch a blank sandbox, click on 'Open' green button to open a browser tab to access the sandbox.
 - first, copy the context of this [Cypher query](cql/step_2_custom_schema.cql), paste it into the query box, click on the blue button to run it.
 - second, copy the context of this [Cypher query](cql/step_3_case_study_import.cql), paste it into the query box, click on the blue button to run it.
-- then run the following to see the whole graph:
+- then run the following to see the whole graph of `case-1` or `case-2`:
 
-        MATCH (n) RETURN n
+        MATCH (n) WHERE n.uid ENDS WITH "case-1" RETURN n
+        
+        MATCH (n) WHERE n.uid ENDS WITH "case-2" RETURN n
+
+- for the whole graph without lemmatized words
+
+        MATCH (n) WHERE n.uid ENDS WITH "case-2" RETURN n
 
 ### How to reproduce this on your computer
 
@@ -318,5 +328,7 @@ then click on the blue button to run it.
 
 - then run the following to see the whole graph:
 
-        MATCH (n) RETURN n
+        MATCH (n) WHERE n.uid ENDS WITH "case-1" RETURN n
+        
+        MATCH (n) WHERE n.uid ENDS WITH "case-2" RETURN n
 
